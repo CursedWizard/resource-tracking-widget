@@ -1,0 +1,25 @@
+{
+  "key": "resource-planning",
+  "version": "0.0.0",
+  "name": "Resource Planning",
+  "description": "Allows you to assign team members to a project.",
+  "applicationName": "YouTrack",
+  "author": "anon",
+  "dependencies": {
+    "YouTrack": ">=2019.1.51759",
+    "Hub": ">3.0"
+  },
+  "products": {
+    "YouTrack": ">=2019.1.51759",
+    "Hub": ">3.0"
+  },
+  "capabilities": {
+    "popups": true,
+    "topNavigation": true
+  },
+  "view": {
+    "fadeOut": false,
+    "defaultWidth": 7,
+    "defaultHeight": 3
+  }
+}
