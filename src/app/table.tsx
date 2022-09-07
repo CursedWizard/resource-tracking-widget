@@ -7,14 +7,12 @@ import {
   Th,
   TableContainer,
   SystemStyleObject,
-  Box,
-  ChakraProvider,
 } from "@chakra-ui/react";
 import { MemberRow } from "./member-row";
 import { TagsInputProps } from "@jetbrains/ring-ui/dist/tags-input/tags-input";
-import _ from "lodash";
 import { tableDataStore } from "../utils/table-data";
 import { observer } from "mobx-react-lite";
+import {TagType} from "../types/resource-planning";
 
 interface Props {
   projects: TagsInputProps["dataSource"];
@@ -27,6 +25,9 @@ export const ResourceTable: React.FC<Props> = observer((props) => {
     bg: "#F9F9F9",
     textTransform: "none",
     color: "#000",
+    fontFamily: "var(--ring-font-family)",
+    fontSize: "var(--ring-font-size)",
+    letterSpacing: "0.1px"
   };
 
   const handleDeleteUser = (name: string) => {
@@ -47,12 +48,13 @@ export const ResourceTable: React.FC<Props> = observer((props) => {
           </Tr>
         </Thead>
         <Tbody>
-          {Object.keys(tableDataStore.tagsByMember).map((name) => (
+          {Object.keys(tableDataStore.tagsByMember).map((name, key) => (
             <MemberRow
+              key={`${name}-${key}`}
               onDeleteUser={handleDeleteUser}
               tags={tableDataStore.tagsByMemberEditing[name]}
               onAddTag={(params, day) =>
-                tableDataStore.addTag(params, day, name)
+                tableDataStore.addTag(params.tag as TagType, day, name)
               }
               onRemoveTag={(params, day) =>
                 tableDataStore.removeTag(params, day, name)

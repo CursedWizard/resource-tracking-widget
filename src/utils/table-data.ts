@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { TagsByMember } from "../types/resource-planning";
+import { TagsByMember, TagType } from "../types/resource-planning";
 import { makeAutoObservable } from "mobx";
 import { DayOfWeek } from "../types/application";
 import { ToggleTagParams } from "@jetbrains/ring-ui/dist/tags-input/tags-input";
 import { ytCacheProvider } from "./widget-adapter";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 class CachedData {
   cacheProvider = ytCacheProvider;
@@ -70,18 +69,14 @@ class TableDataStore {
   }
 
   syncTagsEditingAndCache() {
-    this.tagsByMemberEditing = _.cloneDeep(this.tagsByMember);
+    this.tagsByMemberEditing = cloneDeep(this.tagsByMember);
     cachedData.storeTableData(this.tagsByMember);
-    console.log(JSON.stringify(this.tagsByMember));
   }
 
-  addTag(params: ToggleTagParams, day: DayOfWeek, name: string) {
+  addTag(tag: TagType, day: DayOfWeek, name: string) {
     if (!this.tagsByMember[name]) this.initByName(name);
 
-    this.tagsByMember[name][day].tags.push({
-      key: params.tag.key as string,
-      label: params.tag.label as string,
-    });
+    this.tagsByMember[name][day].tags.push(tag);
   }
 
   removeTag(params: ToggleTagParams, day: DayOfWeek, name: string) {

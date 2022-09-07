@@ -4,16 +4,8 @@ import {
   ToggleTagParams,
 } from "@jetbrains/ring-ui/dist/tags-input/tags-input";
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
   Tr,
-  Th,
   Td,
-  TableCaption,
-  TableContainer,
-  CSSVarsProps,
   SystemStyleObject,
   Flex,
   Text,
@@ -25,7 +17,6 @@ import trashIcon from "@jetbrains/icons/trash";
 import Tag from "@jetbrains/ring-ui/dist/tag/tag";
 import { DayOfWeek } from "../types/application";
 import { TagType } from "../types/resource-planning";
-import Icon from "@jetbrains/ring-ui/dist/icon/icon";
 
 type TagsByDay = {
   [key in DayOfWeek]?: {

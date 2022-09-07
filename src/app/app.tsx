@@ -1,25 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  TableContainer,
-  SystemStyleObject,
-  Box,
-  Stack,
-} from "@chakra-ui/react";
-import { MemberRow } from "./member-row";
+import React, { useMemo, useState } from "react";
+import { Box, Stack } from "@chakra-ui/react";
 import Button from "@jetbrains/ring-ui/dist/button/button";
 import Select from "@jetbrains/ring-ui/dist/select/select";
 import Alert from "@jetbrains/ring-ui/dist/alert-service/alert-service";
-import { ToggleTagParams } from "@jetbrains/ring-ui/dist/tags-input/tags-input";
-import { DayOfWeek, OptionType } from "../types/application";
-import { makeAutoObservable } from "mobx";
+import { OptionType } from "../types/application";
 import { observer } from "mobx-react-lite";
-import _ from "lodash";
-import { TagsByMember } from "../types/resource-planning";
 import { tableDataStore } from "../utils/table-data";
 import { ytAPI } from "../utils/yt-api";
 import { ResourceTable } from "./table";
@@ -30,6 +15,7 @@ const useGetProjects = () => {
       return {
         key: project.id,
         label: project.name,
+        iconUrl: project.iconUrl
       };
     });
   }, []);
@@ -89,8 +75,11 @@ export const Widget = observer(() => {
           {editing ? "Завершить редактирование" : "Редактировать"}
         </Button>
         <Stack direction="row">
-          <Button onClick={handleAddUser}>Добавить</Button>
+          <Button className="ring-ui-border" onClick={handleAddUser}>
+            Добавить
+          </Button>
           <Select
+            buttonClassName="ring-ui-border"
             onSelect={handleSelectUser}
             hint="Специалисты"
             label="Выберите специалиста"

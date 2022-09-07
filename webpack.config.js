@@ -9,6 +9,7 @@ const pkgConfig = require("./package.json").config;
 const componentsPath = join(__dirname, pkgConfig.components);
 
 const webpackConfig = () => ({
+  mode: 'production',
   entry: `${componentsPath}/app/index.tsx`,
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

@@ -2,7 +2,7 @@
   "key": "resource-planning",
   "version": "0.0.0",
   "name": "Resource Planning",
-  "description": "Allows you to assign team members to a project.",
+  "description": "Allows you to assign projects to organization members by day.",
   "applicationName": "YouTrack",
   "author": "anon",
   "dependencies": {
