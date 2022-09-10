@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Table,
   Thead,
@@ -10,12 +10,14 @@ import {
 } from "@chakra-ui/react";
 import { MemberRow } from "./member-row";
 import { TagsInputProps } from "@jetbrains/ring-ui/dist/tags-input/tags-input";
-import { tableDataStore } from "../utils/table-data";
 import { observer } from "mobx-react-lite";
-import {TagType} from "../types/resource-planning";
+import { TagType } from "../types/resource-planning";
+import { useTableStore } from "../slices/table-slice";
+import { deepCloneMap } from "../utils/map-utils";
+import { SelectItem } from "@jetbrains/ring-ui/dist/select/select";
 
 interface Props {
-  projects: TagsInputProps["dataSource"];
+  projects: SelectItem<unknown>[];
   editing: boolean;
 }
 
@@ -27,11 +29,13 @@ export const ResourceTable: React.FC<Props> = observer((props) => {
     color: "#000",
     fontFamily: "var(--ring-font-family)",
     fontSize: "var(--ring-font-size)",
-    letterSpacing: "0.1px"
+    letterSpacing: "0.1px",
   };
 
+  const { users, rowData, removeMember, addTag, removeTag } = useTableStore();
+
   const handleDeleteUser = (name: string) => {
-    tableDataStore.removeMember(name);
+    removeMember(name);
   };
 
   return (
@@ -39,25 +43,25 @@ export const ResourceTable: React.FC<Props> = observer((props) => {
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th sx={tHeadStyles}></Th>
-            <Th sx={tHeadStyles}>Понедельник</Th>
-            <Th sx={tHeadStyles}>Вторник</Th>
-            <Th sx={tHeadStyles}>Среда</Th>
-            <Th sx={tHeadStyles}>Четверг</Th>
-            <Th sx={tHeadStyles}>Пятница</Th>
+            <Th></Th>
+            <Th>Понедельник</Th>
+            <Th>Вторник</Th>
+            <Th>Среда</Th>
+            <Th>Четверг</Th>
+            <Th>Пятница</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {Object.keys(tableDataStore.tagsByMember).map((name, key) => (
+          {users.map((name, key) => (
             <MemberRow
               key={`${name}-${key}`}
-              onDeleteUser={handleDeleteUser}
-              tags={tableDataStore.tagsByMemberEditing[name]}
-              onAddTag={(params, day) =>
-                tableDataStore.addTag(params.tag as TagType, day, name)
+              onUserDelete={handleDeleteUser}
+              tags={rowData.get(name)}
+              onTagAdd={(params, day) =>
+                addTag(params.tag as TagType, day, name)
               }
-              onRemoveTag={(params, day) =>
-                tableDataStore.removeTag(params, day, name)
+              onTagRemove={(params, day) =>
+                removeTag(params.tag as TagType, day, name)
               }
               editing={editing}
               name={name}

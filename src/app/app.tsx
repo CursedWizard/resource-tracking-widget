@@ -5,9 +5,9 @@ import Select from "@jetbrains/ring-ui/dist/select/select";
 import Alert from "@jetbrains/ring-ui/dist/alert-service/alert-service";
 import { OptionType } from "../types/application";
 import { observer } from "mobx-react-lite";
-import { tableDataStore } from "../utils/table-data";
 import { ytAPI } from "../utils/yt-api";
 import { ResourceTable } from "./table";
+import { useTableStore } from "../slices/table-slice";
 
 const useGetProjects = () => {
   const projects = useMemo(() => {
@@ -15,12 +15,12 @@ const useGetProjects = () => {
       return {
         key: project.id,
         label: project.name,
-        iconUrl: project.iconUrl
+        avatar: project.iconUrl,
       };
     });
   }, []);
 
-  return () => projects;
+  return projects;
 };
 
 const useGetMembers = () => {
@@ -39,32 +39,31 @@ export const Widget = observer(() => {
   const projectsDataSource = useGetProjects();
   const members = useGetMembers();
   const [selectedUser, setSelectedUser] = useState<OptionType | null>(null);
+  const { hasMember, addMember } = useTableStore();
 
   const toggleEditing = () => {
     setEditing(!editing);
 
-    tableDataStore.syncTagsEditingAndCache();
     window.scroll({ top: 0 });
   };
 
-  const handleSelectUser = (value: any) => {
+  const handleUserSelect = (value: any) => {
     setSelectedUser(value);
   };
 
-  const handleAddUser = () => {
+  const handleUserAdd = () => {
     if (!selectedUser) {
       Alert.warning("Вы не выбрали специалиста");
       return;
     }
 
-    if (tableDataStore.hasMember(selectedUser.label)) {
+    if (hasMember(selectedUser.label)) {
       Alert.warning("Выбранный специалист уже в таблице");
       return;
     }
 
     setSelectedUser(null);
-    tableDataStore.initByName(selectedUser.label);
-    tableDataStore.syncTagsEditingAndCache();
+    addMember(selectedUser.label);
   };
 
   return (
@@ -75,12 +74,12 @@ export const Widget = observer(() => {
           {editing ? "Завершить редактирование" : "Редактировать"}
         </Button>
         <Stack direction="row">
-          <Button className="ring-ui-border" onClick={handleAddUser}>
+          <Button className="ring-ui-border" onClick={handleUserAdd}>
             Добавить
           </Button>
           <Select
             buttonClassName="ring-ui-border"
-            onSelect={handleSelectUser}
+            onSelect={handleUserSelect}
             hint="Специалисты"
             label="Выберите специалиста"
             data={members}

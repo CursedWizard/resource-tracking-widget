@@ -17,6 +17,8 @@ import trashIcon from "@jetbrains/icons/trash";
 import Tag from "@jetbrains/ring-ui/dist/tag/tag";
 import { DayOfWeek } from "../types/application";
 import { TagType } from "../types/resource-planning";
+import { ProjectsSelect } from "../components/projects-select";
+import { SelectItem } from "@jetbrains/ring-ui/dist/select/select";
 
 type TagsByDay = {
   [key in DayOfWeek]?: {
@@ -25,20 +27,18 @@ type TagsByDay = {
 };
 
 interface Props {
-  projects: TagsInputProps["dataSource"];
+  projects: SelectItem<unknown>[];
   name: string;
   editing: boolean;
-  onAddTag: (params: ToggleTagParams, day: DayOfWeek) => void;
-  onRemoveTag: (params: ToggleTagParams, day: DayOfWeek) => void;
+  onTagAdd: (params: ToggleTagParams, day: DayOfWeek) => void;
+  onTagRemove: (params: ToggleTagParams, day: DayOfWeek) => void;
+  onUserDelete: (name: string) => void;
   tags?: TagsByDay;
-  onDeleteUser: (name: string) => void;
 }
-
-const PLACEHOLDER = "Выберите проект";
 
 const AssignedTags: React.FC<{ tags: TagType[] }> = ({ tags }) => {
   return (
-    <Flex wrap="wrap">
+    <Flex gap="4px" wrap="wrap">
       {tags.map((value, index) => (
         <Tag key={index} readOnly>
           {value.label}
@@ -49,10 +49,11 @@ const AssignedTags: React.FC<{ tags: TagType[] }> = ({ tags }) => {
 };
 
 export const MemberRow: React.FC<Props> = (props) => {
-  const { projects, editing, name, onAddTag, onRemoveTag, onDeleteUser: onUserDelete, tags } =
+  const { projects, editing, name, onTagAdd, onTagRemove, onUserDelete, tags } =
     props;
   const tDataStyles: SystemStyleObject = {
-    width: "250px",
+    minWidth: "60px",
+    maxW: "150px"
   };
 
   const handleUserDelete = useCallback(() => {
@@ -61,15 +62,15 @@ export const MemberRow: React.FC<Props> = (props) => {
 
   return (
     <Tr>
-      <Td>
+      <Td
+        sx={{
+          paddingInlineStart: "0.75rem",
+          paddingInlineEnd: "0.75rem",
+        }}
+      >
         <HStack alignItems="center">
           {editing && <Button onClick={handleUserDelete} icon={trashIcon} />}
-          <Text
-            sx={{
-              fontFamily: "var(--ring-font-family)",
-              fontSize: "var(--ring-font-size)",
-            }}
-          >
+          <Text overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
             {name}
           </Text>
         </HStack>
@@ -77,17 +78,18 @@ export const MemberRow: React.FC<Props> = (props) => {
       {Object.values(DayOfWeek)
         .filter((value) => typeof value !== "string")
         .map((value: number) => {
-          const aTags = tags ? tags[value as DayOfWeek]?.tags ?? [] : [];
+          const aTags = tags
+            ? tags[value as DayOfWeek]?.tags.map((value) => value) ?? []
+            : [];
 
           return (
             <Td key={value} sx={tDataStyles}>
               {editing ? (
-                <TagsInput
+                <ProjectsSelect
                   maxPopupHeight={300}
-                  onAddTag={(params) => onAddTag(params, value)}
-                  onRemoveTag={(params) => onRemoveTag(params, value)}
-                  placeholder={PLACEHOLDER}
-                  dataSource={projects}
+                  onTagAdd={(params) => onTagAdd(params, value)}
+                  onTagRemove={(params) => onTagRemove(params, value)}
+                  options={projects}
                   tags={aTags}
                 />
               ) : (

@@ -28,8 +28,11 @@ class YtAPI {
     members: [],
     projects: [],
   };
+  api: DashboardAPI;
 
   async init(api: DashboardAPI) {
+    this.api = api;
+
     await api.fetchHub(Api.Members).then(
       (value) => this.data.members = value.users
     );
