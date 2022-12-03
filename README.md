@@ -7,7 +7,7 @@ per day of the week (monday - friday)
 
 ## ✨ Features
   - assign a project to a corporate member
-  - allows assigning multiple projects
+  - allows assigning multiple projects per day
   - utilizes corporate API to get users/projects info
 
 ## Developing a Hub widget
