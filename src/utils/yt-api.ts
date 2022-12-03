@@ -5,7 +5,7 @@ const Api = {
   Members: "api/rest/users?fields=id,name",
 };
 
-const BaseUrl = "https://redstart.myjetbrains.com/";
+const BaseUrl = process.env.BASE_URL;
 
 interface Project {
   iconUrl: string;
