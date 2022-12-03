@@ -1,6 +1,6 @@
 # Resource tracking plugin for YouTrack
 
-YouTrack plugin that allows you to assign project to a corporate member
+YouTrack plugin that allows you to assign projects to a corporate member
 per day of the week (monday - friday)
 
 ![](assets/resource-tracking.png)
